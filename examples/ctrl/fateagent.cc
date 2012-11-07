@@ -252,6 +252,7 @@ void CupidSelection(std::vector<robot_t*> & selectFrom, std::vector<robot_t*> & 
 		selectedForTournament.push_back(NULL);
 	}
 
+    // play a number of tournament that depends on the number of cupids in neighbourhood and the selection probability for cupids
 	for (int i = 0; i < (selectFrom.size() * 2); ++i)
 	{
 		if(drand48() < selectionProbability)
@@ -267,17 +268,20 @@ void CupidSelection(std::vector<robot_t*> & selectFrom, std::vector<robot_t*> & 
 		}
 	}
 
-
+    // always a even number of selected parents
 	if (selectTo.size() % 2 == 1)
 	{
 		selectTo.push_back(selectTo.at((int)(drand48() * (double)(selectTo.size()))));
 	}
 }
 
+// breeding for cupids and reapers (for breeders see BreedBreeder) 
 void BreedFateAgent(robot_t* parentA, robot_t* parentB, robot_t* empty, robot_t* breeder)
 {
+    // breed selection probabilities for each type of agent
 	for (int i = 0; i < 4; ++i)
 	{
+        // crossover
 		if (drand48() < 0.5) // TODO this crossover is not present in the original algorithm
 		{
 			empty->fateGenome.selectionProbabilities[i] = parentA->fateGenome.selectionProbabilities[i];
@@ -286,6 +290,7 @@ void BreedFateAgent(robot_t* parentA, robot_t* parentB, robot_t* empty, robot_t*
 		{
 			empty->fateGenome.selectionProbabilities[i] = parentB->fateGenome.selectionProbabilities[i];
 		}
+        // mutation
 		if (drand48() < FATE_MUTATION_RATE)
 		{
 			empty->fateGenome.selectionProbabilities[i] += breeder->breederGenome.fateAgentMutationSize * randn_notrig();
@@ -301,6 +306,8 @@ void BreedFateAgent(robot_t* parentA, robot_t* parentB, robot_t* empty, robot_t*
 		}
 	}
 
+    // breed tournamente size
+    // crossover
 	if (drand48() < 0.5)
 	{
 		empty->fateGenome.tournamentSize = parentA->fateGenome.tournamentSize;
@@ -309,6 +316,7 @@ void BreedFateAgent(robot_t* parentA, robot_t* parentB, robot_t* empty, robot_t*
 	{
 		empty->fateGenome.tournamentSize = parentB->fateGenome.tournamentSize;
 	}
+    // mutation
 	if (drand48() < FATE_MUTATION_RATE)
 	{
 		empty->fateGenome.tournamentSize += (int)((randn_notrig() * breeder->breederGenome.tournamentMutationSize) + 0.5);
@@ -352,6 +360,7 @@ void BreedBreeder(robot_t* parentA, robot_t* parentB, robot_t* empty, robot_t* b
 	AssignColor(empty);
 	empty->iterationsFromLastEvaluation = 0;
 
+    // breed mutation step sizes
 	if (drand48() < 0.5)
 	{
 		empty->breederGenome.candidateSolutionMutationSize = parentA->breederGenome.candidateSolutionMutationSize * exp(BREEDER_LEARNING_RATE * randn_notrig());
@@ -374,9 +383,11 @@ void BreedCandidateSolution(robot_t* parentA, robot_t* parentB, robot_t* empty, 
 	AssignColor(empty);
 	empty->iterationsFromLastEvaluation = 0;
 
+    // breed neural network weights
 	for (size_t i = 0; i < candidateSolutionProblemDimension; ++i)
 	{
 		for (int j = 0; j < 2; ++j){
+            // crossover
 			if (drand48() < 0.5)
 			{
 				empty->candidateSolutionGenome.values[i][j] = parentA->candidateSolutionGenome.values[i][j];
@@ -385,6 +396,7 @@ void BreedCandidateSolution(robot_t* parentA, robot_t* parentB, robot_t* empty, 
 			{
 				empty->candidateSolutionGenome.values[i][j] = parentB->candidateSolutionGenome.values[i][j];
 			}
+            // mutation
 			if (drand48() < CS_MUTATION_RATE)
 			{
 				empty->candidateSolutionGenome.values[i][j] += breeder->breederGenome.candidateSolutionMutationSize * randn_notrig();
