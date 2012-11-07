@@ -46,9 +46,9 @@ static const int sizeArena = 25;
 static int iter = 1;
 
 
-static FILE *systemBehavior = fopen( "../ps/system_behavior.txt", "w");
-static FILE *fitnessCS = fopen( "../ps/fitnessCS.txt", "w");
-static FILE *fitnessFA = fopen( "../ps/fitnessFA.txt", "w");
+static FILE *systemBehavior = fopen( "../ps/statistics/system_behavior.txt", "w");
+static FILE *fitnessCS = fopen( "../ps/statistics/fitnessCS.txt", "w");
+static FILE *fitnessFA = fopen( "../ps/statistics/fitnessFA.txt", "w");
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////

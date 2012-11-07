@@ -1,6 +1,8 @@
 include "epuck-mine.inc"
 include "map.inc"
 
+quit_time 60
+
 # configure the GUI window
 window
 (
