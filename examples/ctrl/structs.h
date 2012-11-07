@@ -12,8 +12,8 @@ static const bool verbose = false;
 static const double wheelSeparation = 52*0.001;
 static const double maxSpeed = 0.4;
 static const double minSpeed = -0.1;
-static const double sensorRange = 1.0;
-static const double activationThreshold=0.98;
+static const double sensorRange = 2.0;
+static const double activationThreshold=1.96;
 
 static const double fateAgentSpawnProbability = 0.33;
 static const double fateAgentRange = 5;
