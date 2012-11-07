@@ -10,3 +10,10 @@
 *.lai
 *.la
 *.a
+
+#Modified files
+*.*~
+
+#Folders
+/build/
+/worlds/bitmaps/
