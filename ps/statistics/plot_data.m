@@ -22,7 +22,7 @@ while count ~= 0
         i = i + 1;
         [val count] = fscanf(fitness_file_CS,'%f', 1);
     end
-    sort(fitness);
+    fitness = sort(fitness);
     best_fitness(t) = fitness(end);
     average_fitness(t) = mean(fitness);
     worst_fitness(t) = fitness(1);
@@ -56,7 +56,7 @@ while count ~= 0
         i = i + 1;
         [val count] = fscanf(fitness_file_FA,'%f', 1);
     end
-    sort(fitness);
+    fitness = sort(fitness);
     best_fitness(t) = fitness(end);
     average_fitness(t) = mean(fitness);
     worst_fitness(t) = fitness(1);

@@ -5,7 +5,6 @@
 
 using namespace Stg;
 
-//int SonarUpdate( Model* mod, robot_t* robot );
 int PositionUpdate( Model* mod, robot_t* robot );
 
 // Random number from a normal distribution, taken from: http://www.dreamincode.net/code/snippet1446.htm
@@ -170,8 +169,10 @@ void EvaluateBreeder(robot_t* robot)
     // find candidate solutions in the neighbourhood
 	std::vector<robot_t*> css;
 	GetCandidateSolutionsInRange(robot, css);
-	fprintf(systemBehavior,"\t neighbourhood\n");
-	fprintf(systemBehavior,"\t\t candidate solutions: %d \n", (int)css.size());
+	if(verbose){
+		fprintf(systemBehavior,"\t neighbourhood\n");
+		fprintf(systemBehavior,"\t\t candidate solutions: %d \n", (int)css.size());
+	}
 	
     // evaluate fitness (average fitness of Candidate Solutions in the neighbourhood)
 	if (css.size() != 0) {
@@ -182,7 +183,8 @@ void EvaluateBreeder(robot_t* robot)
 		}
 		robot->fitness = fitness / (double)css.size();
 	}
-	fprintf(systemBehavior,"\t fitness (average): %f \n", robot->fitness);
+	if(verbose)
+		fprintf(systemBehavior,"\t fitness (average): %f \n", robot->fitness);
 }
 
 void GetAllRobotsInRange(robot_t* robot, std::vector<robot_t*> & cupids, std::vector<robot_t*> & reapers, std::vector<robot_t*> & breeders, std::vector<robot_t*> & css, std::vector<robot_t*> & emptyCS, std::vector<robot_t*> & emptyFA)
@@ -431,14 +433,15 @@ void EvaluateCupid(robot_t* robot)
 	std::vector<robot_t*> emptyCS;
 	std::vector<robot_t*> emptyFA;
 	GetAllRobotsInRange(robot, cupids, reapers, breeders, css, emptyCS, emptyFA);
-	
-	fprintf(systemBehavior,"\t neighbourhood\n");
-	fprintf(systemBehavior,"\t\t candidate solutions: %d \n", (int)css.size());
-	fprintf(systemBehavior,"\t\t cupids: %d \n", (int)cupids.size());
-	fprintf(systemBehavior,"\t\t breeders: %d \n", (int)breeders.size());
-	fprintf(systemBehavior,"\t\t reapers: %d \n", (int)reapers.size());
-	fprintf(systemBehavior,"\t\t empty CS: %d \n", (int)emptyCS.size());
-	fprintf(systemBehavior,"\t\t empty FA: %d \n", (int)emptyFA.size());
+	if(verbose){
+		fprintf(systemBehavior,"\t neighbourhood\n");
+		fprintf(systemBehavior,"\t\t candidate solutions: %d \n", (int)css.size());
+		fprintf(systemBehavior,"\t\t cupids: %d \n", (int)cupids.size());
+		fprintf(systemBehavior,"\t\t breeders: %d \n", (int)breeders.size());
+		fprintf(systemBehavior,"\t\t reapers: %d \n", (int)reapers.size());
+		fprintf(systemBehavior,"\t\t empty CS: %d \n", (int)emptyCS.size());
+		fprintf(systemBehavior,"\t\t empty FA: %d \n", (int)emptyFA.size());
+	}
     
     // evaluate fitness (average fitness of candidate solutions in the neighbourhood)
     	if (css.size() != 0) {
@@ -450,7 +453,8 @@ void EvaluateCupid(robot_t* robot)
 		robot->fitness = fitness / (double)css.size();
 	}
 	
-	fprintf(systemBehavior,"\t fitness (average): %f \n", robot->fitness);
+	if(verbose)
+		fprintf(systemBehavior,"\t fitness (average): %f \n", robot->fitness);
     
     // if there are no breeders or no empty robots in the neighbourhood the cupid cannot perform
 	if (breeders.empty() || (emptyCS.empty() && emptyFA.empty()))
@@ -477,7 +481,8 @@ void EvaluateCupid(robot_t* robot)
 
     // make breeders perform as long as they can do
     
-	fprintf(systemBehavior,"\t actions\n");
+    if(verbose)
+		fprintf(systemBehavior,"\t actions\n");
     
 	while( !typesToChooseFrom.empty() )
 	{
@@ -491,7 +496,8 @@ void EvaluateCupid(robot_t* robot)
 				selectedCupids.pop_back();
 				selectedCupids.pop_back();
 				emptyFA.pop_back();
-				fprintf(systemBehavior,"\t\t generate new cupid\n");
+				if(verbose)
+					fprintf(systemBehavior,"\t\t generate new cupid\n");
 				break;
 			}
 		case Reaper:
@@ -500,7 +506,8 @@ void EvaluateCupid(robot_t* robot)
 				selectedReapers.pop_back();
 				selectedReapers.pop_back();
 				emptyFA.pop_back();
-				fprintf(systemBehavior,"\t\t generate new reaper\n");
+				if(verbose)
+					fprintf(systemBehavior,"\t\t generate new reaper\n");
 				break;
 			}
 		case Breeder:
@@ -509,7 +516,8 @@ void EvaluateCupid(robot_t* robot)
 				selectedBreeders.pop_back();
 				selectedBreeders.pop_back();
 				emptyFA.pop_back();
-				fprintf(systemBehavior,"\t\t generate new breeder\n");
+				if(verbose)
+					fprintf(systemBehavior,"\t\t generate new breeder\n");
 				break;
 			}
 		case CandidateSolution:
@@ -518,7 +526,8 @@ void EvaluateCupid(robot_t* robot)
 				selectedCss.pop_back();
 				selectedCss.pop_back();
 				emptyCS.pop_back();
-				fprintf(systemBehavior,"\t\t generate new candidate solution\n");
+				if(verbose)
+					fprintf(systemBehavior,"\t\t generate new candidate solution\n");
 				break;
 			}
 		default:
@@ -592,14 +601,15 @@ void EvaluateReaper(robot_t* robot)
 	std::vector<robot_t*> emptyCS;
 	std::vector<robot_t*> emptyFA;
     GetAllRobotsInRange(robot, cupids, reapers, breeders, css, emptyCS, emptyFA);
-    
-    fprintf(systemBehavior,"\t neighbourhood\n");
-	fprintf(systemBehavior,"\t\t candidate solutions: %d \n", (int)css.size());
-	fprintf(systemBehavior,"\t\t cupids: %d \n", (int)cupids.size());
-	fprintf(systemBehavior,"\t\t breeders: %d \n", (int)breeders.size());
-	fprintf(systemBehavior,"\t\t reapers: %d \n", (int)reapers.size());
-	fprintf(systemBehavior,"\t\t empty CS: %d \n", (int)emptyCS.size());
-	fprintf(systemBehavior,"\t\t empty FA: %d \n", (int)emptyFA.size());
+    if(verbose){
+		fprintf(systemBehavior,"\t neighbourhood\n");
+		fprintf(systemBehavior,"\t\t candidate solutions: %d \n", (int)css.size());
+		fprintf(systemBehavior,"\t\t cupids: %d \n", (int)cupids.size());
+		fprintf(systemBehavior,"\t\t breeders: %d \n", (int)breeders.size());
+		fprintf(systemBehavior,"\t\t reapers: %d \n", (int)reapers.size());
+		fprintf(systemBehavior,"\t\t empty CS: %d \n", (int)emptyCS.size());
+		fprintf(systemBehavior,"\t\t empty FA: %d \n", (int)emptyFA.size());
+	}
 	
     // evaluate fitness (average fitness of Casndidate Solutions in the neighbourhood)
     	if (css.size() != 0) {
@@ -611,7 +621,8 @@ void EvaluateReaper(robot_t* robot)
 		robot->fitness = fitness / (double)css.size();
 	}
 	
-	fprintf(systemBehavior,"\t fitness(average): %f \n", robot->fitness);
+	if(verbose)
+		fprintf(systemBehavior,"\t fitness(average): %f \n", robot->fitness);
 
     // perform selection for each types of agent
 	std::vector<robot_t*> selectedCupids;
@@ -631,7 +642,9 @@ void EvaluateReaper(robot_t* robot)
 	if (!selectedReapers.empty()) {typesToChooseFrom.push_back(Reaper);}
 
     // kill selected agents for each type
+    if(verbose)
     	fprintf(systemBehavior,"\t actions\n");
+    
     if (!typesToChooseFrom.empty())
     {
         // select random type and kill an agent of this type
@@ -643,7 +656,8 @@ void EvaluateReaper(robot_t* robot)
                 EmptyRobot(selectedCupids[selectedCupids.size() - 1]);
                 //emptyFA.push_back(selectedCupids[selectedCupids.size() - 1]);
                 selectedCupids.pop_back();
-                fprintf(systemBehavior,"\t\t kill cupid \n");
+                if(verbose)
+                	fprintf(systemBehavior,"\t\t kill cupid \n");
                 break;
             }
         case Reaper:
@@ -651,7 +665,8 @@ void EvaluateReaper(robot_t* robot)
                 EmptyRobot(selectedReapers[selectedReapers.size() - 1]);
                 //emptyFA.push_back(selectedReapers[selectedReapers.size() - 1]);
                 selectedReapers.pop_back();
-                fprintf(systemBehavior,"\t\t kill reaper \n");
+                if(verbose)
+                	fprintf(systemBehavior,"\t\t kill reaper \n");
                 break;
             }
         case Breeder:
@@ -659,7 +674,8 @@ void EvaluateReaper(robot_t* robot)
                 EmptyRobot(selectedBreeders[selectedBreeders.size() - 1]);
                 //emptyFA.push_back(selectedBreeders[selectedBreeders.size() - 1]);
                 selectedBreeders.pop_back();
-                fprintf(systemBehavior,"\t\t kill breeder \n");
+                if(verbose)
+                	fprintf(systemBehavior,"\t\t kill breeder \n");
                 break;
             }
         case CandidateSolution:
@@ -667,7 +683,8 @@ void EvaluateReaper(robot_t* robot)
                 EmptyRobot(selectedCss[selectedCss.size() - 1]);
                 //emptyCS.push_back(selectedCss[selectedCss.size() - 1]);
                 selectedCss.pop_back();
-                fprintf(systemBehavior,"\t\t kill candidate solution \n");
+                if(verbose)
+                	fprintf(systemBehavior,"\t\t kill candidate solution \n");
                 break;
             }
         default:
@@ -720,14 +737,9 @@ extern "C" int Init( Model* mod, CtrlArgs* args )
 
   robot->pos = (ModelPosition*)mod;
 
-  //if( verbose )
   robot->pos->AddCallback( Model::CB_UPDATE, (model_callback_t)PositionUpdate, robot );
   robot->pos->Subscribe(); // starts the position updates
-/*
-  robot->sonar = (ModelRanger*)mod->GetChild( "ranger:0" );
-  robot->sonar->AddCallback( Model::CB_UPDATE, (model_callback_t)SonarUpdate, robot );
-  robot->sonar->Subscribe(); // starts the ranger updates
-*/
+
   robot->pos->setUserData(robot);
 
   AgentInit(robot);
@@ -739,59 +751,6 @@ double SigmoidFunction(double x)
 {
 	return 1.0 / (1.0 + pow(euler_e, -x));
 }
-
-
-// inspect the ranger data and decide what to do
-
-/*
-int SonarUpdate( Model* mod, robot_t* robot )
-{
-	// get the data
-	const std::vector<ModelRanger::Sensor>& sensors = robot->sonar->GetSensors();
-	uint32_t sample_count = sensors.size();
-	if( sample_count < 1 )
-		return 0;
-
-	robot->iteration++;
-	robot->iterationsFromLastEvaluation++;
-
-    // movement if robot is a Fate Agent
-	if (robot->type != CandidateSolution && robot->type != Empty)
-	{
-		BasicColisionAvoidance(robot, sensors);
-	}
-    // moviment if robot is empty
-	else
-	{
-		SetSpeed(robot, 0, 0);
-	}
-
-    // if robot is a Fate Agent, let it perform
-	if (robot->type != Empty)
-	{
-        // skip actions during initial cooldown period
-		if (robot->iteration > initialCooldownPriodLength)
-		{
-			switch (robot->type)
-			{
-				case Cupid:
-					EvaluateCupid(robot);
-					break;
-				case Reaper:
-					EvaluateReaper(robot);
-					break;
-				case Breeder:
-					EvaluateBreeder(robot);
-					break;
-				default:
-					break;
-			}
-		}
-	}
-
-	return 0; // run again
-}
-*/
 
 bool isOutOfBound(robot_t* robot){
 	Pose myPose = robot->pos->GetGlobalPose();
@@ -806,7 +765,7 @@ int PositionUpdate( Model* mod, robot_t* robot )
 	
 	char* robotType = "";
 
-	if (!robot->empty && iter % numberOfIterationsPerEvaluation == 0 /*robot->iterationsFromLastEvaluation >= numberOfIterationsPerEvaluation*/)
+	if (!robot->empty && iter % numberOfIterationsPerEvaluation == 0 && robot->iteration > initialCooldownPriodLength)
 	{
 		SetSpeed(robot,drand48(),drand48());
 		switch (robot->type)
@@ -831,7 +790,8 @@ int PositionUpdate( Model* mod, robot_t* robot )
 
 		robot->iterationsFromLastEvaluation = 0;
 		
-		fprintf(systemBehavior,"%s ITERATION %d \n", robotType, robot->iteration);
+		if(verbose)
+			fprintf(systemBehavior,"%s ITERATION %d \n", robotType, robot->iteration);
 	}
 
 	if (robot->empty) {
@@ -849,22 +809,6 @@ int PositionUpdate( Model* mod, robot_t* robot )
 	else
 		robot->out=false;
 		
-//	Pose pose = robot->pos->GetPose();
-//
-//	printf( "Bimbosh Pose: [%.2f %.2f %.2f %.2f]\n",
-//	  pose.x, pose.y, pose.z, pose.a );
-//
-//	World* w = mod->GetWorld();
-//
-//	const std::set<Model*>& models = w->GetAllModels();
-//
-//	for (std::set<Model*>::iterator it = models.begin(); it != models.end(); ++it)
-//	{
-//	  if ((*it)->GetFiducialReturn() == 1)
-//		  std::cout << "Model token: " << (*it)->TokenStr() << std::endl;
-//	}
-//
-
 	if (iter < robot->iteration) {
 		if (iter % numberOfIterationsPerEvaluation == 0)
 			fprintf(fitnessFA,"%d \n",-1);

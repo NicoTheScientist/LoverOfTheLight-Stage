@@ -9,7 +9,7 @@ using namespace Stg;
 
 static const bool verbose = false;
 
-static const double wheelSeparation = 0.38;
+static const double wheelSeparation = 52*0.001;
 static const double maxSpeed = 0.4;
 static const double minSpeed = -0.1;
 static const double sensorRange = 1.0;
@@ -39,7 +39,7 @@ static const double euler_e = 2.71828182845904523536028747135266249775;
 static const int slidingWindowSize = 10;
 static const int windowTimeForUnit = 120;
 static const int numberOfIterationsPerEvaluation = 100;
-static const int initialCooldownPriodLength = 0; // 60 secs of movement
+static const int initialCooldownPriodLength = 600; // 60 secs of movement
 
 static const int sizeArena = 25;
 

@@ -117,7 +117,7 @@ Model* getLightInRange(robot_t* robot){
 
 			if (range < 0.5)
 			{
-				std::cout<<"Old light pose x: "<<lightPose.x<<" y: "<<lightPose.y<<std::endl;
+//				std::cout<<"Old light pose x: "<<lightPose.x<<" y: "<<lightPose.y<<std::endl;
 				return *it;
 			}
 		}
@@ -153,7 +153,7 @@ void CandidateSolutionBehaviour(robot_t* robot)
 	    	// update light position
     		Pose lightPose(drand48()*(sizeArena*2)-sizeArena,drand48()*(sizeArena*2)-sizeArena,0,0);
 	   	light->SetPose(lightPose);
-	   	std::cout<<"New light pose x: "<<lightPose.x<<" y: "<<lightPose.y<<std::endl;
+//	   	std::cout<<"New light pose x: "<<lightPose.x<<" y: "<<lightPose.y<<std::endl;
 	   	// increment lights counter
 	   	robot->window[0]++;
 	   	robot->fitness = ComputeFitness(robot->window);
