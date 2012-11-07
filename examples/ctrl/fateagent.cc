@@ -283,7 +283,7 @@ void BreedFateAgent(robot_t* parentA, robot_t* parentB, robot_t* empty, robot_t*
     // breed selection probabilities for each type of agent
 	for (int i = 0; i < 4; ++i)
 	{
-        // crossover
+        // uniform crossover
 		if (drand48() < 0.5) // TODO this crossover is not present in the original algorithm
 		{
 			empty->fateGenome.selectionProbabilities[i] = parentA->fateGenome.selectionProbabilities[i];
@@ -292,6 +292,9 @@ void BreedFateAgent(robot_t* parentA, robot_t* parentB, robot_t* empty, robot_t*
 		{
 			empty->fateGenome.selectionProbabilities[i] = parentB->fateGenome.selectionProbabilities[i];
 		}
+        // average crossover
+        //double averageGene = (parentA->fateGenome.selectionProbabilities[i] + parentB->fateGenome.selectionProbabilities[i] ) / 2;
+        //empty->fateGenome.selectionProbabilities[i] = averageGene;
         // mutation
 		if (drand48() < FATE_MUTATION_RATE)
 		{
@@ -309,7 +312,7 @@ void BreedFateAgent(robot_t* parentA, robot_t* parentB, robot_t* empty, robot_t*
 	}
 
     // breed tournamente size
-    // crossover
+    // uniform crossover
 	if (drand48() < 0.5)
 	{
 		empty->fateGenome.tournamentSize = parentA->fateGenome.tournamentSize;
@@ -318,6 +321,10 @@ void BreedFateAgent(robot_t* parentA, robot_t* parentB, robot_t* empty, robot_t*
 	{
 		empty->fateGenome.tournamentSize = parentB->fateGenome.tournamentSize;
 	}
+    // average crossover
+    //int averageGene = ( parentA->fateGenome.tournamentSize + parentB->fateGenome.tournamentSize ) / 2;
+    //empty->fateGenome.tournamentSize = averageGene;
+    // average crossover
     // mutation
 	if (drand48() < FATE_MUTATION_RATE)
 	{
@@ -362,7 +369,7 @@ void BreedBreeder(robot_t* parentA, robot_t* parentB, robot_t* empty, robot_t* b
 	AssignColor(empty);
 	empty->iterationsFromLastEvaluation = 0;
 
-    // breed mutation step sizes
+    // breed mutation step sizes (uniform)
 	if (drand48() < 0.5)
 	{
 		empty->breederGenome.candidateSolutionMutationSize = parentA->breederGenome.candidateSolutionMutationSize * exp(BREEDER_LEARNING_RATE * randn_notrig());
@@ -375,6 +382,13 @@ void BreedBreeder(robot_t* parentA, robot_t* parentB, robot_t* empty, robot_t* b
 		empty->breederGenome.fateAgentMutationSize = parentB->breederGenome.fateAgentMutationSize * exp(BREEDER_LEARNING_RATE * randn_notrig());
 		empty->breederGenome.tournamentMutationSize = parentB->breederGenome.tournamentMutationSize * exp(BREEDER_LEARNING_RATE * randn_notrig());
 	}
+    // breed mutation step sizes (average)
+    /*double averageGene = (parentA->breederGenome.candidateSolutionMutationSize + parentB->breederGenome.candidateSolutionMutationSize ) / 2;
+    empty->breederGenome.candidateSolutionMutationSize = averageGene * exp(BREEDER_LEARNING_RATE * randn_notrig());
+    averageGene = (parentA->breederGenome.fateAgentMutationSize + parentB->breederGenome.fateAgentMutationSize ) / 2;
+    empty->breederGenome.fateAgentMutationSize = averageGene * exp(BREEDER_LEARNING_RATE * randn_notrig());
+    averageGene = (parentA->breederGenome.tournamentMutationSize + parentB->breederGenome.tournamentMutationSize ) / 2;
+    empty->breederGenome.tournamentMutationSize = averageGene * exp(BREEDER_LEARNING_RATE * randn_notrig());*/
 }
 
 void BreedCandidateSolution(robot_t* parentA, robot_t* parentB, robot_t* empty, robot_t* breeder)
@@ -389,7 +403,7 @@ void BreedCandidateSolution(robot_t* parentA, robot_t* parentB, robot_t* empty, 
 	for (size_t i = 0; i < candidateSolutionProblemDimension; ++i)
 	{
 		for (int j = 0; j < 2; ++j){
-            // crossover
+            // uniform crossover
 			if (drand48() < 0.5)
 			{
 				empty->candidateSolutionGenome.values[i][j] = parentA->candidateSolutionGenome.values[i][j];
@@ -398,6 +412,10 @@ void BreedCandidateSolution(robot_t* parentA, robot_t* parentB, robot_t* empty, 
 			{
 				empty->candidateSolutionGenome.values[i][j] = parentB->candidateSolutionGenome.values[i][j];
 			}
+            // average crossover
+            //double geneA = parentA->candidateSolutionGenome.values[i][j];
+            //double gebeB = parentB->candidateSolutionGenome.values[i][j];
+            //empty->candidateSolutionGenome.values[i][j] = ( geneA + gebeB ) / 2;
             // mutation
 			if (drand48() < CS_MUTATION_RATE)
 			{
@@ -765,26 +783,31 @@ int PositionUpdate( Model* mod, robot_t* robot )
 	
 	char* robotType = "";
 
+    bool perform = PERFORM_PROBABILITY > drand48();
 	if (!robot->empty && iter % numberOfIterationsPerEvaluation == 0 && robot->iteration > initialCooldownPriodLength)
 	{
-		SetSpeed(robot,drand48(),drand48());
-		switch (robot->type)
-		{
-			case Cupid:
-				EvaluateCupid(robot);
-				robotType = "Cupid";
-				break;
-			case Reaper:
-				EvaluateReaper(robot);
-				robotType = "Reaper";
-				break;
-			case Breeder:
-				EvaluateBreeder(robot);
-				robotType = "Breeder";
-				break;
-			default:
-				break;
-		}
+        
+        SetSpeed(robot,drand48()*maxSpeed,drand48()*maxSpeed);
+        
+        if (perform) {
+            switch (robot->type)
+            {
+                case Cupid:
+                    EvaluateCupid(robot);
+                    robotType = "Cupid";
+                    break;
+                case Reaper:
+                    EvaluateReaper(robot);
+                    robotType = "Reaper";
+                    break;
+                case Breeder:
+                    EvaluateBreeder(robot);
+                    robotType = "Breeder";
+                    break;
+                default:
+                    break;
+            }
+        }
 		
 		fprintf(fitnessFA,"%f ",robot->fitness);
 

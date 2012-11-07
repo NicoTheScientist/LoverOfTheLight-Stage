@@ -29,6 +29,8 @@ static const double MAX_INITIAL_CS_MUTATION_SIZE = 0.05;
 static const double MAX_INITIAL_FATE_MUTATION_SIZE = 0.4;
 static const double MAX_INITIAL_TOURNAMENT_MUTATION_SIZE = 0.4;
 
+static const double PERFORM_PROBABILITY = 0.5;
+
 static const double candidateSolutionGenomeLowerBound = -1.0;
 static const double candidateSolutionGenomeUpperBound = 1.0;
 static const double candidateSolutionGenomeRange = candidateSolutionGenomeUpperBound - candidateSolutionGenomeLowerBound;
